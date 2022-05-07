@@ -1,0 +1,36 @@
+{% extends 'app/base.html' %}
+{% load static %}
+{% block title %}Buy Now{% endblock title %}
+{% block main-content %}
+<div class="container my-5">
+ <div class="row">
+  <div class="col-sm-3">
+      <div class="list-group">
+          <a href="{% url 'footwear' %}" class="list-group-item list-group-item-action" area-current="true">All Shoes</a>
+          <a href="{% url 'footweardata' 'addidas' %}" class="list-group-item list-group-item-action" area-current="true">Addidas</a>
+          <a href="{% url 'footweardata' 'puma' %}" class="list-group-item list-group-item-action" area-current="true">PUMA</a>
+          <a href="{% url 'footweardata' 'nykaa' %}" class="list-group-item list-group-item-action" area-current="true">Nykaa</a>
+          <a href="{% url 'footweardata' 'below' %}" class="list-group-item list-group-item-action" area-current="true">Below : 2000</a>
+          <a href="{% url 'footweardata' 'above' %}" class="list-group-item list-group-item-action" area-current="true">Above : 2000</a>
+      </div>
+  </div>
+  <div class="col-sm-8">
+    <div class="row">
+        {% for shoe in shoes %}
+        <div class="col-sm-4 text-center mb-4">
+            <a href="{% url 'product-detail' shoe.id %}" class="btn">
+                <div class="item">
+                    <img src="{{shoe.product_img.url}}" alt="" height="120" class="">
+                    <div class="fw-bold">{{shoe.title}}</div>
+                    <div class="fw-bold">{{shoe.discounted_price}}
+                        <small class="fw-light text-decoration-line-through">{{shoe.selling_price}}</small>
+                    </div>
+                </div>
+           </a>
+        </div>
+        {% endfor%}
+    </div>
+  </div>
+ </div>
+</div>
+{% endblock main-content %}
