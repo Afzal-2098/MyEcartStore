@@ -18,8 +18,10 @@ urlpatterns = [
     path('address/', views.address, name='address'),
     path('orders/', views.orders, name='orders'),
     path('mobile/', views.mobile, name='mobile'),
+    path('mobile/<slug:data>', views.mobile, name='mobiledata'),
     path('footwear/', views.FootWear, name='footwear'),
     path('footwear/<slug:data>', views.FootWear, name='footweardata'),
+    path('search/', views.search_product, name='searchproduct'),
 
 
     path('accounts/login/', auth_views.LoginView.as_view(template_name='app/login.html', authentication_form=LoginForm), name='login'),

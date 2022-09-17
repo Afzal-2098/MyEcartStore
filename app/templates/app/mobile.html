@@ -5,10 +5,32 @@
 <div class="container my-5">
  <div class="row">
   <div class="col-sm-3">
-   Side Bar for Mobile filter
+   <div class="list-group">
+          <a href="{% url 'mobile' %}" class="list-group-item list-group-item-action" area-current="true">All Shoes</a>
+          <a href="{% url 'mobiledata' 'apple' %}" class="list-group-item list-group-item-action" area-current="true">Apple</a>
+          <a href="{% url 'mobiledata' 'oppo' %}" class="list-group-item list-group-item-action" area-current="true">Oppo</a>
+          <a href="{% url 'mobiledata' 'xiaomi' %}" class="list-group-item list-group-item-action" area-current="true">Xioami</a>
+          <a href="{% url 'mobiledata' 'oneplus' %}" class="list-group-item list-group-item-action" area-current="true">One plus</a>
+          <a href="{% url 'mobiledata' 'below' %}" class="list-group-item list-group-item-action" area-current="true">Below : 20000</a>
+          <a href="{% url 'mobiledata' 'above' %}" class="list-group-item list-group-item-action" area-current="true">Above : 20000</a>
+   </div>
   </div>
   <div class="col-sm-8 offset-sm-1">
-   Mobile Product List
+       <div class="row">
+              {% for phone in mobile %}
+              <div class="col-sm-4 text-center mb-4">
+                  <a href="{% url 'product-detail' phone.id %}" class="btn">
+                      <div class="item">
+                          <img src="{{phone.product_img.url}}" alt="" height="120" class="">
+                          <div class="fw-bold">{{phone.title}}</div>
+                          <div class="fw-bold">{{phone.discounted_price}}
+                              <small class="fw-light text-decoration-line-through">{{phone.selling_price}}</small>
+                          </div>
+                      </div>
+                 </a>
+              </div>
+              {% endfor%}
+          </div>
   </div>
  </div>
 </div>

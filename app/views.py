@@ -1,4 +1,3 @@
-from unicodedata import category
 from django.http import JsonResponse
 from django.shortcuts import redirect, render
 from django.views import View
@@ -14,8 +13,8 @@ from django.utils.decorators import method_decorator
 class ProducView(View):
     def get(self, request):
         totalitem = 0
-        kids_wear = Product.objects.filter(category='KW')
-        foot_wear = Product.objects.filter(category='FT')
+        kids_wear = Product.objects.filter(category='kids wear')
+        foot_wear = Product.objects.filter(category='shoes')
         other_products = Product.objects.filter(id__range=(9, 19))
         if request.user.is_authenticated:
             totalitem = len(Cart.objects.filter(user=request.user))
@@ -32,6 +31,15 @@ class ProductDetailView(View):
         if request.user.is_authenticated:
             totalitem = len(Cart.objects.filter(user=request.user))
         return render(request, 'app/productdetail.html', {'product':product, 'item_already_in_cart':item_already_in_cart, 'totalitem':totalitem})
+
+
+def search_product(request):
+    if request.method == "POST":
+        formdata = request.POST.get('formdata')
+        if formdata is not None:
+            lookups = Product.objects.filter(Q(title__icontains = formdata) | Q(category__icontains = formdata) | Q(brand__icontains = formdata) | Q(description__icontains = formdata))
+            return render(request, 'app/search.html', {'searchdata':lookups})
+        return render(request, 'app/home.html')
 
 
 @login_required
@@ -150,19 +158,27 @@ def orders(request):
     return render(request, 'app/orders.html', {'orderplaced':op})
 
 
-def mobile(request):
- return render(request, 'app/mobile.html')
+def mobile(request, data=None):
+    if data == None:
+        mobile = Product.objects.filter(category='smartphone')
+    elif data == "apple" or "oppo" or "xiaomi" or "oneplus":
+        mobile = Product.objects.filter(category='smartphone').filter(brand=data)
+    elif data == "below":
+        mobile = Product.objects.filter(category='smartphone').filter(discounted_price__lt=20000)
+    elif data == "above":
+        mobile = Product.objects.filter(category='smartphone').filter(discounted_price__gt=20000)
+    return render(request, 'app/mobile.html', {'mobile':mobile})
 
 
 def FootWear(request, data=None):
     if data == None:
-        shoes = Product.objects.filter(category='FT')
+        shoes = Product.objects.filter(category='shoes')
     elif data == "puma" or data == "addidas" or data =="nykaa":
-        shoes = Product.objects.filter(category='FT').filter(brand=data)
+        shoes = Product.objects.filter(category='shoes').filter(brand=data)
     elif data == "below":
-        shoes = Product.objects.filter(category='FT').filter(discounted_price__lt=2000)
+        shoes = Product.objects.filter(category='shoes').filter(discounted_price__lt=2000)
     elif data == "above":
-        shoes = Product.objects.filter(category='FT').filter(discounted_price__gt=2000)
+        shoes = Product.objects.filter(category='shoes').filter(discounted_price__gt=2000)
     return render(request, 'app/footwear.html', {'shoes':shoes})
 
 

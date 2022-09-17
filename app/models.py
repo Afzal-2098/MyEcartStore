@@ -1,6 +1,5 @@
 from django.db import models
 from django.contrib.auth.models import User
-from django.core.validators import MaxValueValidator, MinValueValidator
 # Create your models here.
 
 
@@ -55,20 +54,20 @@ class Costumer(models.Model):
 
 
 CATEGORY_CHOICES = (
-    ('MB', 'Mobile'),
-    ('LT', 'Laptop'),
-    ('TW', 'Top Wear'),
-    ('BW', 'Bottom Wear'),
-    ('MW', 'Mens Wear'),
-    ('WW', 'Womens Wear'),
-    ('KW', 'Kids Wear'),
-    ('FT', 'Footwear'),
-    ('FR', 'Furniture'),
-    ('GR', 'Grocery'),
-    ('ET', 'Electronics'),
-    ('GM', 'Grooming'),
-    ('TY', 'Toy'),
-    ('FC', 'Fashion'),
+    ('smartphone', 'Smartphone'),
+    ('laptop', 'Laptop'),
+    ('top Wear', 'Top Wear'),
+    ('bottom Wear', 'Bottom Wear'),
+    ('mens wear', 'Mens Wear'),
+    ('womens wear', 'Womens Wear'),
+    ('kids wear', 'Kids Wear'),
+    ('shoes', 'Shoes'),
+    ('furniture', 'Furniture'),
+    ('grocery', 'Grocery'),
+    ('electronics', 'Electronics'),
+    ('grooming', 'Grooming'),
+    ('toy', 'Toy'),
+    ('fashion', 'Fashion'),
 )
 class Product(models.Model):
     title = models.CharField(max_length=100)
@@ -76,7 +75,7 @@ class Product(models.Model):
     discounted_price = models.FloatField()
     description = models.TextField()
     brand = models.CharField(max_length=100)
-    category = models.CharField(choices=CATEGORY_CHOICES, max_length=10)
+    category = models.CharField(choices=CATEGORY_CHOICES, max_length=50)
     product_img = models.ImageField(upload_to='product_image')
 
     def __str__(self):
