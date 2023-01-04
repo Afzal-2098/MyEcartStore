@@ -7,7 +7,36 @@
   <div class="col-sm-3">
   </div>
   <div class="col-sm-10 offset-sm-1">
+    
        <div class="row">
+        <!-- {% if messages %}
+<ul class="messages">
+    {% for message in messages %}
+    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+    {% endfor %}
+</ul>
+{% endif %} -->
+        {% if messages %}
+            {% for message in messages %}
+                {{message}}
+            {% endfor %}
+        {% endif %}
+        {% if not searchdata %}
+            <h2>Search results : </h2>
+           <p>No search results</p>
+           <p>Your search query : <b>{{query}}</b> did not match any documents.</p>
+            <div>
+                Suggestions:
+                <ul>
+                    <li>Make sure that all words are spelled correctly.</li>
+                    <li>Try more general keywords.</li>
+                   <li> Try fewer keywords.</li>
+                   <li> Try different keywords.</li>
+                    </li>
+                </ul>
+            </div>
+
+        {% else %}
               {% for item in searchdata %}
               <div class="col-sm-4 text-center mb-4">
                   <a href="{% url 'product-detail' item.id %}" class="btn">
@@ -21,6 +50,7 @@
                  </a>
               </div>
               {% endfor%}
+              {% endif %}
           </div>
   </div>
  </div>

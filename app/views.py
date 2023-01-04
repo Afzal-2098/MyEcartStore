@@ -1,5 +1,5 @@
 from django.http import JsonResponse
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect, render, HttpResponseRedirect
 from django.views import View
 from .models import *
 from .forms import CostumerRegistraionForm, CostumerProfileForm
@@ -8,7 +8,9 @@ from django.db.models import Q
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
-
+from django.contrib.auth import authenticate, login
+from django.conf import settings
+from django.core.mail import send_mail
 
 class ProducView(View):
     def get(self, request):
@@ -38,7 +40,12 @@ def search_product(request):
         formdata = request.POST.get('formdata')
         if formdata is not None:
             lookups = Product.objects.filter(Q(title__icontains = formdata) | Q(category__icontains = formdata) | Q(brand__icontains = formdata) | Q(description__icontains = formdata))
-            return render(request, 'app/search.html', {'searchdata':lookups})
+            if lookups is not None:
+                param = {'searchdata':lookups}
+            else:
+                param = {'query':formdata}
+                messages.warning(request, 'No search results found. Please refine your query.')
+            return render(request, 'app/search.html', param)
         return render(request, 'app/home.html')
 
 
@@ -191,7 +198,20 @@ class CostumeRegistrationFormView(View):
         if form.is_valid():
             messages.success(request, "Congratulations!!! Registered Successfully")
             form.save()
-        return render(request, 'app/customerregistration.html', {'form':form})
+            # user_name = form.cleaned_data['username']
+            # print('useremail', user_email)
+            # print('username',user_name)
+            new_user = authenticate(username=form.cleaned_data['username'],
+                                    password=form.cleaned_data['password1'],
+                                    email=form.cleaned_data['email'])
+            print(new_user)
+            login(request, new_user)
+            subject = 'welcome to MyEcartStore'
+            message = 'Hi thank you for registering in MyEcartStore.'
+            from_email = settings.EMAIL_HOST_USER
+            recipient_list = [new_user.email, ]
+            send_mail( subject, message, from_email, recipient_list )
+        return HttpResponseRedirect('/')
 
 
 @method_decorator(login_required, name='dispatch')
@@ -215,7 +235,8 @@ class ProfileView(View):
             reg = Costumer(user=usr, name=name, locality=locality, city=city, state=state, zip=zip)
             reg.save()
             messages.success(request, 'Congratulations!, Profile Updated Successfully !!!')
-        return render(request, 'app/profile.html', {'form':form, 'active':'btn-primary'})
+        return HttpResponseRedirect('/address', {'active':'btn-primary'})
+        # return render(request, 'app/profile.html', {'form':form, 'active':'btn-primary'})
 
 
 @login_required
